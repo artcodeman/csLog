@@ -1,4 +1,4 @@
-package cslog
+package csLog
 
 type DefaultServer struct {
 	path string

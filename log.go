@@ -1,4 +1,4 @@
-package cslog
+package csLog
 
 const (
 	DEBUG = iota
