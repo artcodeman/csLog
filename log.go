@@ -1,15 +1,10 @@
 package csLog
 
-const (
-	DEBUG = iota
-	INFO
-	WARNING
-	ERROR
-)
+import "github.com/artcodeman/csLog/log_base"
 
 type Log struct {
-	LogClient
-	Server LogServer
+	LogClient log_base.LogClient
+	Server    log_base.LogServer
 }
 
 func (receiver *Log) INFO(M ...any) {
@@ -17,6 +12,7 @@ func (receiver *Log) INFO(M ...any) {
 	receiver.Server.Out(log)
 
 }
+
 func (receiver *Log) ERROR(M ...any) {
 	log := receiver.LogClient.ERROR(M...)
 	receiver.Server.Out(log)
@@ -27,25 +23,12 @@ func (receiver *Log) WARN(M ...any) {
 	receiver.Server.Out(log)
 
 }
+
 func (receiver *Log) DEBUG(M ...any) {
 	log := receiver.LogClient.DEBUG(M...)
 	receiver.Server.Out(log)
 }
 
-func (receiver *Log) SetFilePath(filePath string) *Log {
-	receiver.Server.FilePath(filePath)
-	return receiver
-}
-
-func NewLog(client LogClient, sever LogServer) *Log {
-	if client == nil {
-		client = &DefaultClient{}
-	}
-	if sever == nil {
-		sever1 := &DefaultServer{p: make(chan string, 10)}
-		sever1.start()
-		sever = sever1
-	}
-
-	return &Log{LogClient: client, Server: sever}
+func NewLog(logClientFunc log_base.LogClientInitFunc, logServerFunc log_base.LogServerInitFunc) *Log {
+	return &Log{LogClient: logClientFunc(), Server: logServerFunc()}
 }

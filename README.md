@@ -17,7 +17,7 @@ csLog is a thread-safe log component
 This module depends upon a knowledge of [Markdown]().
 
 ```
-gi
+get go get github.com/artcodeman/csLog
 ```
 
 

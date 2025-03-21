@@ -1,12 +1,19 @@
-package csLog
+package defaultLog
 
 type DefaultServer struct {
-	path string
-	p    chan string
+	p chan string
 }
 
 func (d *DefaultServer) Print(log string) {
 	println(log)
+}
+
+func (d *DefaultServer) Out(msg string) {
+	d.p <- msg
+
+}
+func (d *DefaultServer) Close() {
+	close(d.p)
 }
 
 func (d *DefaultServer) start() {
@@ -27,15 +34,8 @@ func (d *DefaultServer) start() {
 
 }
 
-func (d *DefaultServer) Out(msg string) {
-	d.p <- msg
+func (d *DefaultServer) Init() {
+	d.p = make(chan string, 10)
+	d.start()
 
-}
-
-func (d *DefaultServer) FilePath(path string) {
-	d.path = path
-}
-
-func (d *DefaultServer) Close() {
-	close(d.p)
 }

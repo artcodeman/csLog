@@ -1,4 +1,4 @@
-package csLog
+package log_base
 
 type LogType interface {
 	GetLog() string
@@ -13,7 +13,10 @@ type LogClient interface {
 
 type LogServer interface {
 	Out(log string)
-	FilePath(path string)
 	Close()
 	Print(log string)
 }
+
+type LogServerInitFunc func() LogServer
+
+type LogClientInitFunc func() LogClient
