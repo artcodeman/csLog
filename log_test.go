@@ -8,7 +8,7 @@ import (
 func TestLog_INFO(t *testing.T) {
 	L := NewDefaultLog()
 	defer func() {
-		L.Server.Close()
+		L.logServer.Close()
 
 	}()
 	wait := sync.WaitGroup{}
