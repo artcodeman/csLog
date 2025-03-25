@@ -15,6 +15,7 @@ type LogServer interface {
 	Out(log string)
 	Close()
 	Print(log string)
+	GetLog() (string, bool)
 }
 
 type LogServerInitFunc func() LogServer

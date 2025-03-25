@@ -1,7 +1,23 @@
 package defaultLog
 
+import (
+	"sync"
+	"sync/atomic"
+	"time"
+)
+
 type DefaultServer struct {
-	p chan string
+	p       chan string
+	isClose atomic.Int32
+	sync.Mutex
+}
+
+func (d *DefaultServer) GetLog() (string, bool) {
+	v, ok := <-d.p
+	if !ok {
+		d.isClose.Add(1)
+	}
+	return v, ok
 }
 
 func (d *DefaultServer) Print(log string) {
@@ -9,33 +25,22 @@ func (d *DefaultServer) Print(log string) {
 }
 
 func (d *DefaultServer) Out(msg string) {
-	d.p <- msg
-
+	if d.isClose.Load() == 0 {
+		d.p <- msg
+	}
 }
 func (d *DefaultServer) Close() {
-	close(d.p)
-}
-
-func (d *DefaultServer) start() {
-	go func() {
-		defer func() {
-			println("已退出")
-		}()
-		for {
-			v, ok := <-d.p
-			if v == "" && !ok {
-				return
-			}
-			if ok {
-				d.Print(v)
-			}
-		}
-	}()
+	if d.isClose.Load() == 0 {
+		close(d.p)
+	}
+	d.isClose.Add(1)
+	for d.isClose.Load() == 1 {
+		time.Sleep(100 * time.Microsecond)
+	}
 
 }
 
 func (d *DefaultServer) Init() {
 	d.p = make(chan string, 10)
-	d.start()
 
 }
