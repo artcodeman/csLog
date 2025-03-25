@@ -29,6 +29,10 @@ func (receiver *Log) DEBUG(M ...any) {
 	receiver.logServer.Out(log)
 }
 
+func (receiver *Log) Close() {
+	receiver.logServer.Close()
+}
+
 func start(s log_base.LogServer) {
 	go func() {
 		defer func() {

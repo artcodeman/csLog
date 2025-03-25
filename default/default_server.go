@@ -32,8 +32,8 @@ func (d *DefaultServer) Out(msg string) {
 func (d *DefaultServer) Close() {
 	if d.isClose.Load() == 0 {
 		close(d.p)
+		d.isClose.Add(1)
 	}
-	d.isClose.Add(1)
 	for d.isClose.Load() == 1 {
 		time.Sleep(100 * time.Microsecond)
 	}

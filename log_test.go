@@ -9,8 +9,7 @@ import (
 func TestLog_INFO(t *testing.T) {
 	L := NewDefaultLog()
 	defer func() {
-		L.logServer.Close()
-
+		L.Close()
 	}()
 	wait := sync.WaitGroup{}
 	for i := 0; i < 10; i++ {
@@ -29,7 +28,7 @@ func TestLog_INFO(t *testing.T) {
 func TestFileLog_INFO(t *testing.T) {
 	L := NewFileLog(file_log.SetFilePath("./"), file_log.SetStdin(true), file_log.SetDateFileType(file_log.DAY))
 	defer func() {
-		L.logServer.Close()
+		L.Close()
 
 	}()
 	wait := sync.WaitGroup{}
